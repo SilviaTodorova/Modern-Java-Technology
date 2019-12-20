@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4afdfd4c-a8a8-4f79-b898-306f7aed32fb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/PriceComparatorTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/PriceComparator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/PriceStatistic.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/PriceStatistic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/NoOfferFoundException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/NoOfferFoundException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/OfferAlreadySubmittedException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/OfferAlreadySubmittedException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/ProductNotFoundException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/ProductNotFoundException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/AbstractOffer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/AbstractOffer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/Offer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/Offer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/PremiumOffer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/PremiumOffer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/RegularOffer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/offer/RegularOffer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/ShoppingPortal/bg/sofia/uni/fmi/mjt/shopping/portal/OfferTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src.zip" beforeDir="false" afterPath="$PROJECT_DIR$/src.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/PriceComparator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/comparators/PriceComparator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/PriceStatistic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/PriceStatistic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/NoOfferFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/NoOfferFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/OfferAlreadySubmittedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/OfferAlreadySubmittedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/ProductNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/exceptions/ProductNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/AbstractOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/AbstractOffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/Offer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/Offer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/PremiumOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/PremiumOffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/RegularOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bg/sofia/uni/fmi/mjt/shopping/portal/offer/RegularOffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/OfferTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/offer/OfferTest.java" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1Tkk6Umi4iulRFbZcIUzjC3v38W" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../AI/TicTacToe" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="settings.saveactions" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="bg.sofia.uni.fmi.mjt.shopping.portal.offer" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.All in ShoppingPortal">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal.Main" />
+      <module name="ShoppingPortal" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bg.sofia.uni.fmi.mjt.shopping.portal.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in ShoppingPortal" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ShoppingPortal" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OfferTest.testRegularOfferCompareToSmaller" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ShoppingPortal" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bg.sofia.uni.fmi.mjt.shopping.portal.offer.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal.offer" />
+      <option name="MAIN_CLASS_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal.offer.OfferTest" />
+      <option name="METHOD_NAME" value="testRegularOfferCompareToSmaller" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShoppingDirectoryImplTest.collectProductStatistics" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ShoppingPortal" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bg.sofia.uni.fmi.mjt.shopping.portal.comparators.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal" />
+      <option name="MAIN_CLASS_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal.ShoppingDirectoryImplTest" />
+      <option name="METHOD_NAME" value="collectProductStatistics" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShoppingDirectoryImplTest.collectProductStatisticsNullProductName" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ShoppingPortal" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bg.sofia.uni.fmi.mjt.shopping.portal.comparators.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal" />
+      <option name="MAIN_CLASS_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal.ShoppingDirectoryImplTest" />
+      <option name="METHOD_NAME" value="collectProductStatisticsNullProductName" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bg.sofia.uni.fmi.mjt.shopping.portal in ShoppingPortal" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ShoppingPortal" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bg.sofia.uni.fmi.mjt.shopping.portal.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bg.sofia.uni.fmi.mjt.shopping.portal" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.All in ShoppingPortal" />
+        <item itemvalue="JUnit.bg.sofia.uni.fmi.mjt.shopping.portal in ShoppingPortal" />
+        <item itemvalue="JUnit.OfferTest.testRegularOfferCompareToSmaller" />
+        <item itemvalue="JUnit.ShoppingDirectoryImplTest.collectProductStatistics" />
+        <item itemvalue="JUnit.ShoppingDirectoryImplTest.collectProductStatisticsNullProductName" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4afdfd4c-a8a8-4f79-b898-306f7aed32fb" name="Default Changelist" comment="" />
+      <created>1574011305347</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1574011305347</updated>
+      <workItem from="1574011308279" duration="6262000" />
+      <workItem from="1574100882042" duration="78000" />
+      <workItem from="1574527244224" duration="6588000" />
+      <workItem from="1574535509905" duration="3996000" />
+      <workItem from="1574588229568" duration="26602000" />
+      <workItem from="1574700859662" duration="1788000" />
+      <workItem from="1574798831093" duration="70000" />
+      <workItem from="1574941984817" duration="13000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/offer/OfferTest.java</url>
+          <line>115</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java</url>
+          <line>161</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java</url>
+          <line>112</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java</url>
+          <line>131</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java</url>
+          <line>101</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/ShoppingDirectoryImplTest.java</url>
+          <line>167</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/offer/OfferTest.java</url>
+          <line>84</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/bg/sofia/uni/fmi/mjt/shopping/portal/offer/OfferTest.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ShoppingPortal$All_in_ShoppingPortal.ic" NAME="All in ShoppingPortal Coverage Results" MODIFIED="1574617249811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
