@@ -3,15 +3,13 @@ package bg.sofia.uni.fmi.mjt.authroship.detection;
 import bg.sofia.uni.fmi.mjt.authroship.detection.enums.FeatureType;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static bg.sofia.uni.fmi.mjt.authroship.detection.enums.FeatureType.*;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.helpers.ValidationHelper.*;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.Validator.*;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.GlobalConstants.*;
 
 public class AuthorshipDetectorImpl implements AuthorshipDetector {

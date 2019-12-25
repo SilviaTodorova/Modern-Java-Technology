@@ -5,8 +5,8 @@ import bg.sofia.uni.fmi.mjt.authroship.detection.enums.FeatureType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static bg.sofia.uni.fmi.mjt.authroship.detection.helpers.ValidationHelper.checkNotNegative;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.helpers.ValidationHelper.checkNotNull;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.Validator.checkNotNegative;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.Validator.checkNotNull;
 
 public class LinguisticSignature {
     private Map<FeatureType, Double> features;

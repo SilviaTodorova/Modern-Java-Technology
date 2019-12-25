@@ -1,6 +1,6 @@
-package bg.sofia.uni.fmi.mjt.authroship.detection.helpers;
+package bg.sofia.uni.fmi.mjt.authroship.detection.utils;
 
-public class ValidationHelper {
+public class Validator {
     private static final String ERROR_NULL_VALUE = "Null value";
     private static final String ERROR_NEGATIVE_VALUE = "Negative value";
     private static final String ERROR_COUNT_VALUES_IN_ARRAY = "Array must contains %d elements not %d";
