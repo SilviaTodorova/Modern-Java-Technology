@@ -1,7 +1,11 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection;
 
+import bg.sofia.uni.fmi.mjt.authroship.detection.enums.FeatureType;
+
+import java.util.HashMap;
 import java.util.Map;
 
+import static bg.sofia.uni.fmi.mjt.authroship.detection.helpers.ValidationHelper.checkNotNegative;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.helpers.ValidationHelper.checkNotNull;
 
 public class LinguisticSignature {
@@ -12,11 +16,18 @@ public class LinguisticSignature {
     }
 
     public Map<FeatureType, Double> getFeatures() {
-        return features;
+        return new HashMap<>(features);
     }
 
     private void setFeatures(Map<FeatureType, Double> features) {
         checkNotNull(features);
         this.features = features;
+    }
+
+    private void addFeature(FeatureType featureType, double weight) {
+        checkNotNull(features);
+        checkNotNull(featureType);
+        checkNotNegative(weight);
+        this.features.put(featureType, weight);
     }
 }
