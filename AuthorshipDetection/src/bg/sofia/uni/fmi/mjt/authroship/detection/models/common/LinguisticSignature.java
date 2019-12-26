@@ -12,6 +12,7 @@ public class LinguisticSignature {
     private Map<FeatureType, Double> features;
 
     public LinguisticSignature(Map<FeatureType, Double> features) {
+        checkNotNull(features);
         setFeatures(features);
     }
 
