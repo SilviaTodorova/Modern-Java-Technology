@@ -1,12 +1,11 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models;
 
-import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.SentenceAnalyzer;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.TextAnalyzer;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunctions.cleanUp;
@@ -14,14 +13,12 @@ import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunc
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class SentenceAnalyzerImpl implements SentenceAnalyzer {
+public class TextAnalyzerImpl implements TextAnalyzer {
     private Set<String> sentences;
-    private Set<String> phrases;
     private Map<String, Integer> words;
 
-    public SentenceAnalyzerImpl(InputStream mysteryText) {
+    public TextAnalyzerImpl(InputStream mysteryText) {
         setSentences(mysteryText);
-        fillPhrases(sentences);
         fillWords(sentences);
     }
 
@@ -52,15 +49,16 @@ public class SentenceAnalyzerImpl implements SentenceAnalyzer {
 
     @Override
     public double getAverageSentenceLength() {
-        // Среден брой думи в изречение - броят на всички думи, използвани в текста, разделен на броя на изреченията.
-        return 0;
+        long countOfAllWords = getCountOfAllWords();
+        long countSentences = getCountSentences();
+        return (double) countOfAllWords / countSentences;
     }
 
     @Override
     public double getAverageSentenceComplexity() {
         // Сложност на изречение - средният брой фрази в изречение
-
-        return 0;
+        ToLongFunction<String> mapper = sentence -> Arrays.stream(sentence.split(DELIMITERS_PHRASE_REGEX)).mapToLong(String::length).filter(APPEAR_ONE_PREDICATE).count();
+        return sentences.stream().mapToLong(mapper).average().getAsDouble();
     }
 
     private void setSentences(InputStream mysteryText) {
@@ -79,14 +77,14 @@ public class SentenceAnalyzerImpl implements SentenceAnalyzer {
                     String start = sentence.substring(0, lastIndex);
                     String[] allSentences = start.trim().split(DELIMITERS_SENTENCES_REGEX);
 
-                    Arrays.stream(allSentences).filter(x -> !x.isEmpty() && !x.isBlank()).forEach(sentences::add);
+                    Arrays.stream(allSentences).filter(REMOVE_EMPTY_WORDS_PREDICATE).forEach(sentences::add);
                     remainder.replace(0, remainder.length(), sentence.substring(lastIndex + 1));
 
                 }
             }
 
             String remainderAsString = remainder.toString().trim();
-            if (!remainderAsString.isEmpty() && !remainderAsString.isBlank()) {
+            if (REMOVE_EMPTY_WORDS_PREDICATE.test(remainderAsString)) {
                 sentences.add(remainderAsString);
             }
 
@@ -95,32 +93,13 @@ public class SentenceAnalyzerImpl implements SentenceAnalyzer {
         }
     }
 
-    private void fillPhrases(Set<String> sentences) {
-        for (String sentence : sentences) {
-            String[] splitSentence = sentence.split(DELIMITERS_PHRASE_REGEX);
-
-            if (splitSentence.length > 1) {
-                phrases = Arrays.stream(splitSentence)
-                        .filter(x -> !x.isEmpty() && !x.isBlank())
-                        .collect(Collectors.toSet());
-            }
-
-        }
-    }
-
     private void fillWords(Set<String> sentences) {
         words = new HashMap<>();
         sentences.stream()
                 .flatMap(str -> Arrays.stream(str.split(DELIMITER_WORDS_REGEX)))
-                .filter(x -> !x.isEmpty() && !x.isBlank())
+                .filter(REMOVE_EMPTY_WORDS_PREDICATE)
                 .forEach(this::addWord);
 
-    }
-
-    private long getCountWordsInSentence(String sentence) {
-        return Arrays.stream(sentence.split(DELIMITER_WORDS_REGEX))
-                .filter(x -> !x.isEmpty() && !x.isBlank())
-                .count();
     }
 
     private void addWord(String word) {
@@ -132,6 +111,10 @@ public class SentenceAnalyzerImpl implements SentenceAnalyzer {
         }
 
         words.put(word, ++counter);
+    }
+
+    private long getCountSentences() {
+        return sentences.size();
     }
 
     private long getCountOfUniqWords() {
@@ -155,4 +138,17 @@ public class SentenceAnalyzerImpl implements SentenceAnalyzer {
                 .mapToInt(Map.Entry::getValue)
                 .sum();
     }
+
+    //    private void fillPhrases(Set<String> sentences) {
+//        for (String sentence : sentences) {
+//            String[] splitSentence = sentence.split(DELIMITERS_PHRASE_REGEX);
+//
+//            if (splitSentence.length > 1) {
+//                phrases = Arrays.stream(splitSentence)
+//                        .filter(REMOVE_EMPTY_WORDS)
+//                        .collect(Collectors.toSet());
+//            }
+//
+//        }
+//    }
 }

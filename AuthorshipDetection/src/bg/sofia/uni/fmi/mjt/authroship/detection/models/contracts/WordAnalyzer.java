@@ -1,4 +1,13 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts;
 
-public class WordAnalyzer {
+public interface WordAnalyzer {
+    long getCountOfWords();
+
+    long getCountOfUniqueWords();
+
+    long getCountOfAllWords();
+
+    double getAverageWordLength();
+
+    void add(String word);
 }

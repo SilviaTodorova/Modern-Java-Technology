@@ -1,16 +1,18 @@
-package bg.sofia.uni.fmi.mjt.authroship.detection;
+package bg.sofia.uni.fmi.mjt.authroship.detection.models;
 
-import bg.sofia.uni.fmi.mjt.authroship.detection.enums.FeatureType;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.AuthorshipDetector;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.WordAnalyzer;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static bg.sofia.uni.fmi.mjt.authroship.detection.enums.FeatureType.*;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.GlobalFunctions.cleanUp;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.Validator.*;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.utils.GlobalConstants.*;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType.*;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.*;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AuthorshipDetectorImpl implements AuthorshipDetector {
     private InputStream signaturesDataset;
@@ -41,17 +43,24 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
     }
 
     @Override
-    public LinguisticSignature calculateSignature(InputStream mysteryText) throws IOException {
+    public LinguisticSignature calculateSignature(InputStream mysteryText) {
         checkNotNull(mysteryText);
 
-        Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
-        features.put(AVERAGE_WORD_LENGTH, calculateAverageWordComplexityFeature(mysteryText));
-        features.put(TYPE_TOKEN_RATIO, calculateTypeTokenRatioWeight(mysteryText));
-        features.put(HAPAX_LEGOMENA_RATIO, calculateHapaxLegomenaRatioWeight(mysteryText));
-        features.put(AVERAGE_SENTENCE_LENGTH, calculateAverageSentenceLengthWeight(mysteryText));
-        features.put(AVERAGE_SENTENCE_COMPLEXITY, calculateAverageSentenceComplexityWeight(mysteryText));
+        try {
+            Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
+            features.put(AVERAGE_SENTENCE_LENGTH, calculateAverageSentenceLengthWeight(mysteryText));
 
-        return new LinguisticSignature(features);
+//            features.put(AVERAGE_WORD_LENGTH, calculateAverageWordComplexityFeature(mysteryText));
+//            features.put(TYPE_TOKEN_RATIO, calculateTypeTokenRatioWeight(mysteryText));
+//            features.put(HAPAX_LEGOMENA_RATIO, calculateHapaxLegomenaRatioWeight(mysteryText));
+//            features.put(AVERAGE_SENTENCE_LENGTH, calculateAverageSentenceLengthWeight(mysteryText));
+//            features.put(AVERAGE_SENTENCE_COMPLEXITY, calculateAverageSentenceComplexityWeight(mysteryText));
+
+            return new LinguisticSignature(features);
+        } catch (Exception ex){
+            return null;
+        }
+
     }
 
     @Override
@@ -63,7 +72,7 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
     }
 
     @Override
-    public String findAuthor(InputStream mysteryText) throws IOException {
+    public String findAuthor(InputStream mysteryText) {
         checkNotNull(mysteryText);
 
         Map<String, LinguisticSignature> knownSignatures = getKnownSignatures();
@@ -82,59 +91,37 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         return minAuthorName;
     }
 
-    // Средна дължина на думите - средният брой символи в дума, след strip-ване на пунктуацията.
     private double calculateAverageWordComplexityFeature(InputStream mysteryText) throws IOException {
-        WordAnalyzer counter = new WordAnalyzer();
-        BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF8), BUFFER_SIZE);
-        String chunk;
-
-        while ((chunk = br.readLine()) != null) {
-            String[] words = cleanUp(chunk).replaceAll("\\d", " ").split("\\W+");
-            Arrays.stream(words).filter(x->!x.equals(EMPTY_STRING)).forEach(w -> counter.add(w));
-        }
-
-        return counter.getAverageWordLength();
+        mysteryText.reset();
+        return new WordAnalyzerImpl(mysteryText).getAverageWordLength();
     }
 
-    // броят на всички различни думи, използвани в текста, разделен на броя на всички думи.
-    // Измерва колко повтаряща се е лексиката.
-    private double calculateTypeTokenRatioWeight(InputStream mysteryText) throws IOException {
-        WordAnalyzer counter = new WordAnalyzer();
-        BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF8), BUFFER_SIZE);
-        String chunk;
+    private double calculateTypeTokenRatioWeight(InputStream mysteryText) {
+        WordAnalyzer wordAnalyzer = new WordAnalyzerImpl(mysteryText);
 
-        while ((chunk = br.readLine()) != null) {
-            String[] words = cleanUp(chunk).replaceAll("\\d", " ").split("\\W+");
-            Arrays.stream(words).filter(x->!x.equals(EMPTY_STRING)).forEach(w -> counter.add(w));
-        }
-
-        long countOfUniqueWords = counter.getCountOfWords();
-        long countOfAllWords = counter.getCountOfAllWords();
+        long countOfUniqueWords = wordAnalyzer.getCountOfWords();
+        long countOfAllWords = wordAnalyzer.getCountOfAllWords();
         return (double) countOfUniqueWords / countOfAllWords;
     }
 
-    // Hapax Legomena Ratio - броят на думите, срещащи се само по веднъж в даден текст,
-    // разделен на броя на всички думи.
-    private double calculateHapaxLegomenaRatioWeight(InputStream mysteryText) throws IOException {
-        WordAnalyzer counter = new WordAnalyzer();
-        BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF8), BUFFER_SIZE);
-        String chunk;
-
-        while ((chunk = br.readLine()) != null) {
-            String[] words = cleanUp(chunk).replaceAll("\\d", " ").split("\\W+");
-            Arrays.stream(words).filter(x->!x.equals(EMPTY_STRING)).forEach(w -> counter.add(w));
-        }
-
-
-        long countOfWordAppearOnes = counter.getCountOfUniqueWords();
-        long countOfAllWords = counter.getCountOfAllWords();
+    private double calculateHapaxLegomenaRatioWeight(InputStream mysteryText) {
+        WordAnalyzerImpl wordAnalyzer = new WordAnalyzerImpl(mysteryText);
+        long countOfWordAppearOnes = wordAnalyzer.getCountOfUniqueWords();
+        long countOfAllWords = wordAnalyzer.getCountOfAllWords();
 
         return (double) countOfWordAppearOnes / countOfAllWords;
     }
 
-    private double calculateAverageSentenceLengthWeight(InputStream mysteryText) throws IOException {
-        // TODO:
-        return weights[AVERAGE_SENTENCE_LENGTH_INDEX];
+    private double calculateAverageSentenceLengthWeight(InputStream mysteryText) {
+        int countSentences = new TextAnalyzerImpl(mysteryText).getCountSentence();
+        long countWords = new WordAnalyzerImpl(mysteryText).getCountOfWords();
+
+
+        return (double) countWords / countSentences;
+    }
+
+    private double calculateAverageSentenceComplexityWeight(InputStream mysteryText) {
+        return new PhraseAnalyzerImpl(mysteryText).getAverageCountPhrases();
     }
 
     private static double calculateSumSimilarity(LinguisticSignature firstMystery, LinguisticSignature secondMystery, double[] weights) {
@@ -156,14 +143,9 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         return result;
     }
 
-    private double calculateAverageSentenceComplexityWeight(InputStream mysteryText) throws IOException {
-        // TODO:
-        return weights[AVERAGE_SENTENCE_COMPLEXITY_INDEX];
-    }
-
     private Map<String, LinguisticSignature> getKnownSignatures() {
         Map<String, LinguisticSignature> knownSignatures = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(signaturesDataset, "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(signaturesDataset, UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 addSignature(knownSignatures, line);
@@ -184,7 +166,7 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         FeatureType[] values = FeatureType.values();
         int index = 0;
         while (matcher.find()) {
-            double value = Double.valueOf(matcher.group());
+            double value = Double.parseDouble(matcher.group());
             FeatureType feature = values[index];
 
             features.put(feature, value);

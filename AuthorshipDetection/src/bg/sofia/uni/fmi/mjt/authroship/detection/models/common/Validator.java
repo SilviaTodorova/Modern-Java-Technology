@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.authroship.detection.utils;
+package bg.sofia.uni.fmi.mjt.authroship.detection.models.common;
 
 public class Validator {
     private static final String ERROR_NULL_VALUE = "Null value";

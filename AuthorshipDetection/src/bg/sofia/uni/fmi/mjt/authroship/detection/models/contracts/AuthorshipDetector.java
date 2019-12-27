@@ -1,6 +1,7 @@
-package bg.sofia.uni.fmi.mjt.authroship.detection;
+package bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts;
 
-import java.io.IOException;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.LinguisticSignature;
+
 import java.io.InputStream;
 
 public interface AuthorshipDetector {
@@ -17,7 +18,7 @@ public interface AuthorshipDetector {
      * @throws IllegalArgumentException if @mysteryText is null
      *
      */
-    LinguisticSignature calculateSignature(InputStream mysteryText) throws IOException;
+    LinguisticSignature calculateSignature(InputStream mysteryText);
 
     /**
      *
@@ -38,6 +39,6 @@ public interface AuthorshipDetector {
      * @throws IllegalArgumentException if @mysteryText is null
      *
      */
-    String findAuthor(InputStream mysteryText) throws IOException;
+    String findAuthor(InputStream mysteryText);
 
 }

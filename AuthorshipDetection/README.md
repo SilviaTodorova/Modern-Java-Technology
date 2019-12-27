@@ -23,7 +23,7 @@ public AuthorshipDetectorImpl(InputStream signaturesDataset, double[] weights)
 ```java
 package bg.sofia.uni.fmi.mjt.authroship.detection;
 
-import java.io.InputStream;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.LinguisticSignature;import java.io.InputStream;
 
 public interface AuthorshipDetector {
 	

@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.authroship.detection.models.common;
+package bg.sofia.uni.fmi.mjt.authroship.detection.models;
 
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType;
 

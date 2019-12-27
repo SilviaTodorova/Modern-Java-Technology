@@ -1,30 +1,30 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models;
 
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.WordAnalyzer;
+
 import java.io.*;
-import java.text.BreakIterator;
 import java.util.*;
 
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunctions.cleanUp;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class WordAnalyzer {
+public class WordAnalyzerImpl implements WordAnalyzer {
     private final Map<String, Integer> map;
 
-    public WordAnalyzer(InputStream mysteryText) {
+    public WordAnalyzerImpl(InputStream mysteryText) {
         map = new HashMap<>();
 
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF8), BUFFER_SIZE)) {
-            String chunk;
 
+
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF_8), BUFFER_SIZE)) {
+            String chunk;
             while ((chunk = br.readLine()) != null) {
                 String[] tokens = cleanUp(chunk).split("\\s+");
-                Arrays.stream(tokens).filter(x->!x.equals(EMPTY_STRING)).forEach(w -> add(w));
+                Arrays.stream(tokens).filter(x->!x.equals(EMPTY_STRING)).forEach(this::add);
             }
-
-            int x =0;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            int x = 0;
         } catch (IOException e) {
             e.printStackTrace();
         }
