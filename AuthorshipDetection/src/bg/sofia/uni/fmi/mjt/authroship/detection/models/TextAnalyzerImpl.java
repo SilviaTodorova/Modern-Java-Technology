@@ -18,16 +18,14 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     private Map<String, Integer> words;
 
     public TextAnalyzerImpl(InputStream mysteryText) {
-        setSentences(mysteryText);
-        fillWords(sentences);
+        extractData(mysteryText);
     }
 
     @Override
-    public double getAverageCountWords() {
-        return words.entrySet()
+    public double getAverageWordLength() {
+        return words.keySet()
                 .stream()
-                .map(Map.Entry::getKey)
-                .map(str -> str.replaceAll(PUNCTUATION_REGEX, EMPTY_STRING))
+                .map(str -> str.replaceAll(REGEX_PUNCTUATION, EMPTY_STRING))
                 .mapToInt(String::length)
                 .average()
                 .getAsDouble();
@@ -57,11 +55,11 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     @Override
     public double getAverageSentenceComplexity() {
         // Сложност на изречение - средният брой фрази в изречение
-        ToLongFunction<String> mapper = sentence -> Arrays.stream(sentence.split(DELIMITERS_PHRASE_REGEX)).mapToLong(String::length).filter(APPEAR_ONE_PREDICATE).count();
+        ToLongFunction<String> mapper = sentence -> Arrays.stream(sentence.split(REGEX_DELIMITERS_PHRASE)).mapToLong(String::length).filter(LONG_PREDICATE_APPEAR_ONE_PREDICATE).count();
         return sentences.stream().mapToLong(mapper).average().getAsDouble();
     }
 
-    private void setSentences(InputStream mysteryText) {
+    private void extractData(InputStream mysteryText) {
         sentences = new HashSet<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(mysteryText, UTF_8), BUFFER_SIZE)) {
@@ -73,31 +71,32 @@ public class TextAnalyzerImpl implements TextAnalyzer {
                 Matcher matcher = PATTERN_DELIMITERS_SENTENCES.matcher(sentence);
 
                 if (matcher.find()) {
-                    int lastIndex = lastIndexOfRegex(sentence.toString(), DELIMITERS_SENTENCES_REGEX);
+                    int lastIndex = lastIndexOfRegex(sentence.toString(), REGEX_DELIMITERS_SENTENCES);
                     String start = sentence.substring(0, lastIndex);
-                    String[] allSentences = start.trim().split(DELIMITERS_SENTENCES_REGEX);
+                    String[] allSentences = start.trim().split(REGEX_DELIMITERS_SENTENCES);
 
-                    Arrays.stream(allSentences).filter(REMOVE_EMPTY_WORDS_PREDICATE).forEach(sentences::add);
+                    Arrays.stream(allSentences).filter(PREDICATE_REMOVE_EMPTY_WORDS).forEach(sentences::add);
                     remainder.replace(0, remainder.length(), sentence.substring(lastIndex + 1));
 
                 }
             }
 
             String remainderAsString = remainder.toString().trim();
-            if (REMOVE_EMPTY_WORDS_PREDICATE.test(remainderAsString)) {
+            if (PREDICATE_REMOVE_EMPTY_WORDS.test(remainderAsString)) {
                 sentences.add(remainderAsString);
             }
 
-        } catch (Exception ex) {
-            // TODO:
+            fillWords();
+        } catch (IOException ex) {
+            throw new RuntimeException(ERROR_EXTRACT_DATA, ex);
         }
     }
 
-    private void fillWords(Set<String> sentences) {
+    private void fillWords() {
         words = new HashMap<>();
         sentences.stream()
-                .flatMap(str -> Arrays.stream(str.split(DELIMITER_WORDS_REGEX)))
-                .filter(REMOVE_EMPTY_WORDS_PREDICATE)
+                .flatMap(str -> Arrays.stream(str.split(REGEX_DELIMITER_WORDS)))
+                .filter(PREDICATE_REMOVE_EMPTY_WORDS)
                 .forEach(this::addWord);
 
     }
@@ -118,24 +117,24 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     }
 
     private long getCountOfUniqWords() {
-        return words.entrySet()
+        return words.values()
                 .stream()
-                .mapToInt(Map.Entry::getValue)
+                .mapToInt(i -> i)
                 .filter(value -> value == APPEAR_ONE)
                 .count();
     }
 
     private long getCountOfUsedWords() {
-        return words.entrySet()
+        return words.values()
                 .stream()
-                .mapToInt(Map.Entry::getValue)
+                .mapToInt(i -> i)
                 .count();
     }
 
     private long getCountOfAllWords() {
-        return words.entrySet()
+        return words.values()
                 .stream()
-                .mapToInt(Map.Entry::getValue)
+                .mapToInt(i -> i)
                 .sum();
     }
 

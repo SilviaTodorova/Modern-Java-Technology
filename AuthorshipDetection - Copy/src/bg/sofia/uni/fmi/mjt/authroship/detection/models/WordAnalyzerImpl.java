@@ -16,15 +16,13 @@ public class WordAnalyzerImpl implements WordAnalyzer {
     public WordAnalyzerImpl(InputStream mysteryText) {
         map = new HashMap<>();
 
-
-
         try(BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF_8), BUFFER_SIZE)) {
             String chunk;
+
             while ((chunk = br.readLine()) != null) {
                 String[] tokens = cleanUp(chunk).split("\\s+");
                 Arrays.stream(tokens).filter(x->!x.equals(EMPTY_STRING)).forEach(this::add);
             }
-            int x = 0;
         } catch (IOException e) {
             e.printStackTrace();
         }

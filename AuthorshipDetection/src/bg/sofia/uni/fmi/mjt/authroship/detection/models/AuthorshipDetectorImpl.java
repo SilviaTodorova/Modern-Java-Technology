@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.authroship.detection.models;
 
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType;
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.AuthorshipDetector;
-import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.WordAnalyzer;
+import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.TextAnalyzer;
 
 import java.io.*;
 import java.util.*;
@@ -39,6 +39,7 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
     private void setWeights(double[] weights) {
         checkNotNull(weights);
         checkLengthDoubleArray(weights, COUNT_FEATURES);
+        checkNotNegativeDoubleValuesInArray(weights);
         this.weights = weights;
     }
 
@@ -48,13 +49,13 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
 
         try {
             Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
-            features.put(AVERAGE_SENTENCE_LENGTH, calculateAverageSentenceLengthWeight(mysteryText));
 
-//            features.put(AVERAGE_WORD_LENGTH, calculateAverageWordComplexityFeature(mysteryText));
-//            features.put(TYPE_TOKEN_RATIO, calculateTypeTokenRatioWeight(mysteryText));
-//            features.put(HAPAX_LEGOMENA_RATIO, calculateHapaxLegomenaRatioWeight(mysteryText));
-//            features.put(AVERAGE_SENTENCE_LENGTH, calculateAverageSentenceLengthWeight(mysteryText));
-//            features.put(AVERAGE_SENTENCE_COMPLEXITY, calculateAverageSentenceComplexityWeight(mysteryText));
+            TextAnalyzer analyzer = new TextAnalyzerImpl(mysteryText);
+            features.put(AVERAGE_SENTENCE_LENGTH, analyzer.getAverageSentenceLength());
+            features.put(AVERAGE_WORD_LENGTH, analyzer.getAverageWordLength());
+            features.put(TYPE_TOKEN_RATIO, analyzer.getTypeTokeRatio());
+            features.put(HAPAX_LEGOMENA_RATIO, analyzer.getHapaxLegomenaRatio());
+            features.put(AVERAGE_SENTENCE_COMPLEXITY, analyzer.getAverageSentenceComplexity());
 
             return new LinguisticSignature(features);
         } catch (Exception ex){
@@ -89,39 +90,6 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
             }
         }
         return minAuthorName;
-    }
-
-    private double calculateAverageWordComplexityFeature(InputStream mysteryText) throws IOException {
-        mysteryText.reset();
-        return new WordAnalyzerImpl(mysteryText).getAverageWordLength();
-    }
-
-    private double calculateTypeTokenRatioWeight(InputStream mysteryText) {
-        WordAnalyzer wordAnalyzer = new WordAnalyzerImpl(mysteryText);
-
-        long countOfUniqueWords = wordAnalyzer.getCountOfWords();
-        long countOfAllWords = wordAnalyzer.getCountOfAllWords();
-        return (double) countOfUniqueWords / countOfAllWords;
-    }
-
-    private double calculateHapaxLegomenaRatioWeight(InputStream mysteryText) {
-        WordAnalyzerImpl wordAnalyzer = new WordAnalyzerImpl(mysteryText);
-        long countOfWordAppearOnes = wordAnalyzer.getCountOfUniqueWords();
-        long countOfAllWords = wordAnalyzer.getCountOfAllWords();
-
-        return (double) countOfWordAppearOnes / countOfAllWords;
-    }
-
-    private double calculateAverageSentenceLengthWeight(InputStream mysteryText) {
-        int countSentences = new TextAnalyzerImpl(mysteryText).getCountSentence();
-        long countWords = new WordAnalyzerImpl(mysteryText).getCountOfWords();
-
-
-        return (double) countWords / countSentences;
-    }
-
-    private double calculateAverageSentenceComplexityWeight(InputStream mysteryText) {
-        return new PhraseAnalyzerImpl(mysteryText).getAverageCountPhrases();
     }
 
     private static double calculateSumSimilarity(LinguisticSignature firstMystery, LinguisticSignature secondMystery, double[] weights) {

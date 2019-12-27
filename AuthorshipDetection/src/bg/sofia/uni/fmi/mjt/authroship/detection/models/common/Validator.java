@@ -1,19 +1,19 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models.common;
 
-public class Validator {
-    private static final String ERROR_NULL_VALUE = "Null value";
-    private static final String ERROR_NEGATIVE_VALUE = "Negative value";
-    private static final String ERROR_COUNT_VALUES_IN_ARRAY = "Array must contains %d elements not %d";
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
 
+public class Validator {
     public static <T> void checkNotNull(T elem) {
         if(elem == null){
             throw new IllegalArgumentException(ERROR_NULL_VALUE);
         }
     }
 
-    public static void checkNotNegative(double elem) {
-        if(elem <= 0){
-            throw new IllegalArgumentException(ERROR_NEGATIVE_VALUE);
+    public static void checkNotNegativeDoubleValuesInArray(double[] arr) {
+        for (double elem: arr) {
+            if(elem <= 0){
+                throw new IllegalArgumentException(ERROR_NEGATIVE_VALUE);
+            }
         }
     }
 

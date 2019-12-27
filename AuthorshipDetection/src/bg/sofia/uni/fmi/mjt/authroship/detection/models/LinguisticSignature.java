@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNegative;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNull;
 
 public class LinguisticSignature {
@@ -24,13 +23,6 @@ public class LinguisticSignature {
     private void setFeatures(Map<FeatureType, Double> features) {
         checkNotNull(features);
         this.features = features;
-    }
-
-    private void addFeature(FeatureType featureType, double weight) {
-        checkNotNull(features);
-        checkNotNull(featureType);
-        checkNotNegative(weight);
-        this.features.put(featureType, weight);
     }
 
     @Override

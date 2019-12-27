@@ -17,10 +17,9 @@ public class PhraseAnalyzerImpl implements PhraseAnalyzer {
     public PhraseAnalyzerImpl(InputStream mysteryText) {
         phrases = new HashSet<>();
 
-
         try(BufferedReader br = new BufferedReader(new InputStreamReader(mysteryText, UTF_8), BUFFER_SIZE)) {
             String chunk;
-            mysteryText.reset();
+
             while ((chunk = br.readLine()) != null) {
                 String[] arr = cleanUp(chunk).split(",:;");
                 Arrays.stream(arr).filter(x->!x.equals(EMPTY_STRING)).forEach(phrases::add);

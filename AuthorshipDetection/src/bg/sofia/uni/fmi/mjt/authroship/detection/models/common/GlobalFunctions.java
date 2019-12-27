@@ -10,7 +10,7 @@ public final class GlobalFunctions {
 
     public static String cleanUp(String word) {
         return word.toLowerCase()
-                .replaceAll("^[!,:;\\-?<>#*\'\"\\[\\(]\\n\\t\\\\]+|[!,:;\\-?<>#\\*\"\\[\\(]\\n\\t\\\\]+$", "");
+                .replaceAll("^[!,:;\\-?<>#*\'\"\\[(]\\n\\t\\\\]+|[!,:;\\-?<>#*\\[(\n\\t\\\\]+$", "");
     }
 
     public static int lastIndexOfRegex(String str, String toFind) {
