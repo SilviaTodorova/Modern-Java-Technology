@@ -54,8 +54,12 @@ public class TextAnalyzerImpl implements TextAnalyzer {
 
     @Override
     public double getAverageSentenceComplexity() {
-        // Сложност на изречение - средният брой фрази в изречение
-        ToLongFunction<String> mapper = sentence -> Arrays.stream(sentence.split(REGEX_DELIMITERS_PHRASE)).mapToLong(String::length).filter(LONG_PREDICATE_APPEAR_ONE_PREDICATE).count();
+        ToLongFunction<String> mapper = sentence ->
+                Arrays.stream(sentence.split(REGEX_DELIMITERS_PHRASE))
+                .mapToLong(String::length)
+                        .filter(LONG_PREDICATE_APPEAR_ONE_PREDICATE)
+                        .count();
+
         return sentences.stream().mapToLong(mapper).average().getAsDouble();
     }
 
@@ -119,7 +123,6 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     private long getCountOfUniqWords() {
         return words.values()
                 .stream()
-                .mapToInt(i -> i)
                 .filter(value -> value == APPEAR_ONE)
                 .count();
     }

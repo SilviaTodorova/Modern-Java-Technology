@@ -4,14 +4,14 @@ import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalCons
 
 public class Validator {
     public static <T> void checkNotNull(T elem) {
-        if(elem == null){
+        if (elem == null) {
             throw new IllegalArgumentException(ERROR_NULL_VALUE);
         }
     }
 
     public static void checkNotNegativeDoubleValuesInArray(double[] arr) {
-        for (double elem: arr) {
-            if(elem <= 0){
+        for (double elem : arr) {
+            if (elem <= 0) {
                 throw new IllegalArgumentException(ERROR_NEGATIVE_VALUE);
             }
         }
@@ -19,7 +19,7 @@ public class Validator {
 
     public static <T> void checkLengthDoubleArray(double[] arr, long length) {
         int arrLength = arr.length;
-        if(length != arrLength) {
+        if (length != arrLength) {
             String message = String.format(ERROR_COUNT_VALUES_IN_ARRAY, length, arrLength);
             throw new IllegalArgumentException(message);
         }

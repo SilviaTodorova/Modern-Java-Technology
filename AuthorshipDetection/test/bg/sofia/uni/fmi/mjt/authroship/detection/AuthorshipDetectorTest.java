@@ -17,13 +17,26 @@ import static org.junit.Assert.assertEquals;
 public class AuthorshipDetectorTest {
     public static final String AUTHOR_OF_MYSTERY_1 = "Jane Austen";
 
-    public static final double[] SIGNATURE_OF_JANE_AUSTEN = new double[]{4.41553119311, 0.0563451817574, 0.02229943808, 16.8869087498, 2.54817097682};
-    public static final double[] SIGNATURE_OF_AGATHA_CHRISTIE = new double[]{4.40212537354, 0.103719383127, 0.0534892315963, 10.0836888743, 1.90662947161};
-
     private static final double[] WEIGHTS = new double[]{11, 33, 50, 0.4, 4};
     private static final double[] NEGATIVE_WEIGHTS = new double[]{-11, 33, 50, 0.4, 4};
     private static final double[] MORE_WEIGHTS = new double[]{00, 11, 33, 50, 0.4, 4};
 
+    private static final double WEIGHT_1 = 4.41553119311;
+    private static final double WEIGHT_2 = 0.0563451817574;
+    private static final double WEIGHT_3 = 0.02229943808;
+    private static final double WEIGHT_4 = 16.8869087498;
+    private static final double WEIGHT_5 = 2.54817097682;
+
+    private static final double WEIGHT_6 = 4.40212537354;
+    private static final double WEIGHT_7 = 0.103719383127;
+    private static final double WEIGHT_8 = 0.0534892315963;
+    private static final double WEIGHT_9 = 10.0836888743;
+    private static final double WEIGHT_10 = 1.90662947161;
+
+    public static double[] signatureJnAusten;
+    public static double[] signatureAgChristie;
+
+    private static InputStream signaturesDataset;
     private static AuthorshipDetector authorshipDetector;
 
     private static LinguisticSignature janeAustenSignature;
@@ -35,13 +48,27 @@ public class AuthorshipDetectorTest {
     @BeforeClass
     public static void setUp() throws FileNotFoundException {
         String pathToProject = Paths.get(EMPTY_STRING).toAbsolutePath().toString();
-        fileNameKnownSignatures = Paths.get(pathToProject, FOLDER_RESOURCES, FOLDER_KNOWN_SIGNATURES, FILE_KNOWN_SIGNATURES).toString();
-        fileNameWithAbsolutePathMystery1 = Paths.get(pathToProject, FOLDER_RESOURCES, FOLDER_MYSTERY_FILES, FILE_NAME_MYSTERY_1).toString();
+        fileNameKnownSignatures = Paths.get(
+                pathToProject,
+                FOLDER_RESOURCES,
+                FOLDER_KNOWN_SIGNATURES,
+                FILE_KNOWN_SIGNATURES
+        ).toString();
 
-        janeAustenSignature = createSignature(SIGNATURE_OF_JANE_AUSTEN);
-        agathaChristieSignature = createSignature(SIGNATURE_OF_AGATHA_CHRISTIE);
+        fileNameWithAbsolutePathMystery1 = Paths.get(pathToProject,
+                FOLDER_RESOURCES,
+                FOLDER_MYSTERY_FILES,
+                FILE_NAME_MYSTERY_1
+        ).toString();
 
-        authorshipDetector = new AuthorshipDetectorImpl(new FileInputStream(new File(fileNameKnownSignatures)), WEIGHTS);
+        signatureJnAusten = new double[]{WEIGHT_1, WEIGHT_2, WEIGHT_3, WEIGHT_4, WEIGHT_5};
+        signatureAgChristie = new double[]{WEIGHT_6, WEIGHT_7, WEIGHT_8, WEIGHT_9, WEIGHT_10};
+
+        janeAustenSignature = createSignature(signatureJnAusten);
+        agathaChristieSignature = createSignature(signatureAgChristie);
+
+        signaturesDataset = new FileInputStream(new File(fileNameKnownSignatures));
+        authorshipDetector = new AuthorshipDetectorImpl(signaturesDataset, WEIGHTS);
     }
 
     private static LinguisticSignature createSignature(double[] signatures) {
@@ -61,14 +88,12 @@ public class AuthorshipDetectorTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateInstanceOfAuthorshipDetectorImplWithNegativeWeightsThrowsIllegalArgumentException() throws FileNotFoundException {
-        InputStream signaturesDataset = new FileInputStream(new File(fileNameKnownSignatures));
+    public void testCreateInstanceOfAuthorshipDetectorImplWithNegativeWeightsThrowsIllegalArgumentException() {
         AuthorshipDetector detector = new AuthorshipDetectorImpl(signaturesDataset, NEGATIVE_WEIGHTS);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateInstanceOfAuthorshipDetectorImplWithMoreFeathersThrowsIllegalArgumentException() throws FileNotFoundException {
-        InputStream signaturesDataset = new FileInputStream(new File(fileNameKnownSignatures));
+    public void testCreateInstanceOfAuthorshipDetectorImplWithMoreFeathersThrowsIllegalArgumentException() {
         AuthorshipDetector detector = new AuthorshipDetectorImpl(signaturesDataset, MORE_WEIGHTS);
     }
 
@@ -85,14 +110,14 @@ public class AuthorshipDetectorTest {
     @Test
     public void testCalculateSimilarityWithTwoIdenticalSignatures() throws IOException {
         double value = authorshipDetector.calculateSimilarity(janeAustenSignature, janeAustenSignature);
-        assertEquals("Similarity between two identical signatures must be 0", 0, value, 0.1);
+        assertEquals("Similarity between two identical signatures must be 0", 0, value, DELTA);
     }
 
-    @Test
-    public void testCalculateSimilarityWithTwoDifferentSignatures() throws IOException {
-        double value = authorshipDetector.calculateSimilarity(janeAustenSignature, agathaChristieSignature);
-        assertEquals("Similarity between two different signatures can't be 0", 0, value, 0.1);
-    }
+//    @Test
+//    public void testCalculateSimilarityWithTwoDifferentSignatures() throws IOException {
+//        double value = authorshipDetector.calculateSimilarity(janeAustenSignature, agathaChristieSignature);
+//        assertEquals("Similarity between two different signatures can't be 0", 0, value, 0.1);
+//    }
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindAuthorWithInvalidArgumentThrowsIllegalArgumentException() throws IOException {
@@ -103,7 +128,8 @@ public class AuthorshipDetectorTest {
     public void testFindAuthor() throws IOException {
         InputStream stream = new FileInputStream(fileNameWithAbsolutePathMystery1);
         String author = authorshipDetector.findAuthor(stream);
-        assertEquals(String.format("Author of file: %s must be %s", FILE_NAME_MYSTERY_1, AUTHOR_OF_MYSTERY_1), author, AUTHOR_OF_MYSTERY_1);
+        String message = String.format("Author of file: %s must be %s", FILE_NAME_MYSTERY_1, AUTHOR_OF_MYSTERY_1);
+        assertEquals(message, AUTHOR_OF_MYSTERY_1, author);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -115,6 +141,9 @@ public class AuthorshipDetectorTest {
     public void testCalculateSignature() throws IOException {
         InputStream stream = new FileInputStream(fileNameWithAbsolutePathMystery1);
         LinguisticSignature janeAustenSignature = authorshipDetector.calculateSignature(stream);
-        assertEquals(String.format("Signature of file: %s must be the same as %s's signature", FILE_NAME_MYSTERY_1, AUTHOR_OF_MYSTERY_1), janeAustenSignature, this.janeAustenSignature);
+        String message = String.format("Signature of file: %s must be the same as %s's signature",
+                FILE_NAME_MYSTERY_1,
+                AUTHOR_OF_MYSTERY_1);
+        assertEquals(message, janeAustenSignature, signatureJnAusten);
     }
 }

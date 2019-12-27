@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 public class GlobalConstants {
     public static final int BUFFER_SIZE = 8192;
+    public static final double DELTA = 0.01;
 
     public static final int APPEAR_ONE = 1;
     public static final int COUNT_FEATURES = 5;

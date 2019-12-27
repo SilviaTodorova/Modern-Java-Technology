@@ -23,17 +23,9 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         setWeights(weights);
     }
 
-    public InputStream getSignaturesDataset() {
-        return signaturesDataset;
-    }
-
     private void setSignaturesDataset(InputStream signaturesDataset) {
         checkNotNull(signaturesDataset);
         this.signaturesDataset = signaturesDataset;
-    }
-
-    public double[] getWeights() {
-        return weights.clone();
     }
 
     private void setWeights(double[] weights) {
@@ -58,7 +50,7 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
             features.put(AVERAGE_SENTENCE_COMPLEXITY, analyzer.getAverageSentenceComplexity());
 
             return new LinguisticSignature(features);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             return null;
         }
 
@@ -92,9 +84,11 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         return minAuthorName;
     }
 
-    private static double calculateSumSimilarity(LinguisticSignature firstMystery, LinguisticSignature secondMystery, double[] weights) {
-        Map<FeatureType, Double> firstMysteryFeatures = firstMystery.getFeatures();
-        Map<FeatureType, Double> secondMysteryFeatures = secondMystery.getFeatures();
+    private static double calculateSumSimilarity(LinguisticSignature first,
+                                                 LinguisticSignature second,
+                                                 double[] weights) {
+        Map<FeatureType, Double> firstMysteryFeatures = first.getFeatures();
+        Map<FeatureType, Double> secondMysteryFeatures = second.getFeatures();
 
         FeatureType[] features = FeatureType.values();
         double result = 0;
