@@ -24,23 +24,4 @@ public class LinguisticSignature {
         checkNotNull(features);
         this.features = features;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        LinguisticSignature that = (LinguisticSignature) o;
-        return Objects.equals(features, that.features);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(features);
-    }
 }

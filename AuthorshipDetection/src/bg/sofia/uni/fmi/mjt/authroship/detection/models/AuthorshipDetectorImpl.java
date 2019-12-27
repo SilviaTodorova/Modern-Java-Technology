@@ -4,8 +4,14 @@ import bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.AuthorshipDetector;
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.TextAnalyzer;
 
-import java.io.*;
-import java.util.*;
+import javax.xml.crypto.dsig.XMLSignature;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,21 +45,31 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
     public LinguisticSignature calculateSignature(InputStream mysteryText) {
         checkNotNull(mysteryText);
 
-        try {
-            Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
+        Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
 
-            TextAnalyzer analyzer = new TextAnalyzerImpl(mysteryText);
-            features.put(AVERAGE_SENTENCE_LENGTH, analyzer.getAverageSentenceLength());
-            features.put(AVERAGE_WORD_LENGTH, analyzer.getAverageWordLength());
-            features.put(TYPE_TOKEN_RATIO, analyzer.getTypeTokeRatio());
-            features.put(HAPAX_LEGOMENA_RATIO, analyzer.getHapaxLegomenaRatio());
-            features.put(AVERAGE_SENTENCE_COMPLEXITY, analyzer.getAverageSentenceComplexity());
+        TextAnalyzer analyzer = new TextAnalyzerImpl(mysteryText);
 
-            return new LinguisticSignature(features);
-        } catch (Exception ex) {
-            return null;
-        }
+        // 1. Average Word Complexity
+        double averageWordLength = analyzer.getAverageWordLength();
+        features.put(AVERAGE_WORD_LENGTH, averageWordLength);
 
+        // 2. Type Token Ratio
+        double typeTokeRatio = analyzer.getTypeTokeRatio();
+        features.put(TYPE_TOKEN_RATIO, typeTokeRatio);
+
+        // 3. Hapax Legomena Ratio
+        double hapaxLegomenaRatio = analyzer.getHapaxLegomenaRatio();
+        features.put(HAPAX_LEGOMENA_RATIO, hapaxLegomenaRatio);
+
+        //4. Average Sentence Length
+        double averageSentenceLength = analyzer.getAverageSentenceLength();
+        features.put(AVERAGE_SENTENCE_LENGTH, averageSentenceLength);
+
+        // 5. Average Sentence Complexity
+        double averageSentenceComplexity = analyzer.getAverageSentenceComplexity();
+        features.put(AVERAGE_SENTENCE_COMPLEXITY, averageSentenceComplexity);
+
+        return new LinguisticSignature(features);
     }
 
     @Override
@@ -71,17 +87,20 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         Map<String, LinguisticSignature> knownSignatures = getKnownSignatures();
         LinguisticSignature signature = calculateSignature(mysteryText);
 
-        double min = Double.MIN_NORMAL;
-        String minAuthorName = EMPTY_STRING;
+        double closestVal = Double.MAX_VALUE;
+        String closestAuthorName = EMPTY_STRING;
 
         for (var curr : knownSignatures.entrySet()) {
-            double value = calculateSimilarity(curr.getValue(), signature);
-            if (min >= value) {
-                minAuthorName = curr.getKey();
-                min = value;
+            LinguisticSignature currSignature = curr.getValue();
+            double value = calculateSimilarity(currSignature, signature);
+
+            double valuePowTwo = value * value;
+            if (valuePowTwo <= (closestVal * closestVal)) {
+                closestAuthorName = curr.getKey();
+                closestVal = value;
             }
         }
-        return minAuthorName;
+        return closestAuthorName;
     }
 
     private static double calculateSumSimilarity(LinguisticSignature first,
@@ -114,8 +133,8 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
             }
 
             return knownSignatures;
-        } catch (IOException ioExc) {
-            throw new RuntimeException("Error occurred while checking style", ioExc);
+        } catch (IOException ex) {
+            throw new RuntimeException("Error occurred while reading known signatures", ex);
         }
     }
 

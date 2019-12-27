@@ -1,6 +1,8 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models.common;
 
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_NULL_VALUE;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_NEGATIVE_VALUE;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_COUNT_VALUES_IN_ARRAY;
 
 public class Validator {
     public static <T> void checkNotNull(T elem) {

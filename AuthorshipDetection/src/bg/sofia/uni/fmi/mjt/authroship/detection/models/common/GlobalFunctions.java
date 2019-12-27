@@ -16,10 +16,12 @@ public final class GlobalFunctions {
     public static int lastIndexOfRegex(String str, String toFind) {
         Pattern pattern = Pattern.compile(toFind);
         Matcher matcher = pattern.matcher(str);
+
         int lastIndex = -1;
         while (matcher.find()) {
             lastIndex = matcher.start();
         }
+
         return lastIndex;
     }
 }

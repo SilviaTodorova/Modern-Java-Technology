@@ -2,12 +2,32 @@ package bg.sofia.uni.fmi.mjt.authroship.detection.models;
 
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.TextAnalyzer;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
 
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.EMPTY_STRING;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_PUNCTUATION;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_DELIMITERS_SENTENCES;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_DELIMITER_WORDS;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_DELIMITERS_PHRASE;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.PREDICATE_REMOVE_EMPTY_WORDS;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.LONG_PREDICATE_APPEAR_ONE_PREDICATE;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.APPEAR_ONE;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.BUFFER_SIZE;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.PATTERN_DELIMITERS_SENTENCES;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_EXTRACT_DATA;
+import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.DELIMITER;
+
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunctions.cleanUp;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunctions.lastIndexOfRegex;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNull;
@@ -41,26 +61,26 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     @Override
     public double getHapaxLegomenaRatio() {
         long countOfUniqWords = getCountOfUniqWords();
-        long countOfAllWords = getCountOfAllWords();
-        return (double) countOfUniqWords / countOfAllWords;
+        long countOfUsedWords = getCountOfUsedWords();
+        return (double) countOfUniqWords / countOfUsedWords;
     }
 
     @Override
     public double getAverageSentenceLength() {
-        long countOfAllWords = getCountOfAllWords();
+        long countOfUsedWords = getCountOfUsedWords();
         long countSentences = getCountSentences();
-        return (double) countOfAllWords / countSentences;
+        return (double) countOfUsedWords / countSentences;
     }
 
     @Override
     public double getAverageSentenceComplexity() {
-        ToLongFunction<String> mapper = sentence ->
+        ToLongFunction<String> countPhrasesInSentence = sentence ->
                 Arrays.stream(sentence.split(REGEX_DELIMITERS_PHRASE))
                 .mapToLong(String::length)
                         .filter(LONG_PREDICATE_APPEAR_ONE_PREDICATE)
                         .count();
 
-        return sentences.stream().mapToLong(mapper).average().getAsDouble();
+        return sentences.stream().mapToLong(countPhrasesInSentence).average().getAsDouble();
     }
 
     private void extractData(InputStream mysteryText) {
@@ -71,7 +91,7 @@ public class TextAnalyzerImpl implements TextAnalyzer {
             StringBuilder remainder = new StringBuilder();
 
             while ((buff = reader.readLine()) != null) {
-                StringBuilder sentence = remainder.append(" ").append(cleanUp(buff).trim());
+                StringBuilder sentence = remainder.append(DELIMITER).append(cleanUp(buff).trim());
                 Matcher matcher = PATTERN_DELIMITERS_SENTENCES.matcher(sentence);
 
                 if (matcher.find()) {
@@ -83,11 +103,6 @@ public class TextAnalyzerImpl implements TextAnalyzer {
                     remainder.replace(0, remainder.length(), sentence.substring(lastIndex + 1));
 
                 }
-            }
-
-            String remainderAsString = remainder.toString().trim();
-            if (PREDICATE_REMOVE_EMPTY_WORDS.test(remainderAsString)) {
-                sentences.add(remainderAsString);
             }
 
             fillWords();
@@ -130,27 +145,13 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     private long getCountOfUsedWords() {
         return words.values()
                 .stream()
-                .mapToInt(i -> i)
                 .count();
     }
 
     private long getCountOfAllWords() {
         return words.values()
                 .stream()
-                .mapToInt(i -> i)
+                .mapToInt(Integer::intValue)
                 .sum();
     }
-
-    //    private void fillPhrases(Set<String> sentences) {
-//        for (String sentence : sentences) {
-//            String[] splitSentence = sentence.split(DELIMITERS_PHRASE_REGEX);
-//
-//            if (splitSentence.length > 1) {
-//                phrases = Arrays.stream(splitSentence)
-//                        .filter(REMOVE_EMPTY_WORDS)
-//                        .collect(Collectors.toSet());
-//            }
-//
-//        }
-//    }
 }
