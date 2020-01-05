@@ -4,7 +4,6 @@ import bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNull;
 

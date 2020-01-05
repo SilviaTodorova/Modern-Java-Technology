@@ -1,10 +1,10 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models.common;
 
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_NULL_VALUE;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_NEGATIVE_VALUE;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_COUNT_VALUES_IN_ARRAY;
-
 public class Validator {
+    public static final String ERROR_NULL_VALUE = "Null value";
+    public static final String ERROR_NEGATIVE_VALUE = "Negative value";
+    public static final String ERROR_COUNT_VALUES_IN_ARRAY = "Array must contains %d elements not %d";
+
     public static <T> void checkNotNull(T elem) {
         if (elem == null) {
             throw new IllegalArgumentException(ERROR_NULL_VALUE);

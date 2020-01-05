@@ -4,7 +4,6 @@ import bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.AuthorshipDetector;
 import bg.sofia.uni.fmi.mjt.authroship.detection.models.contracts.TextAnalyzer;
 
-import javax.xml.crypto.dsig.XMLSignature;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,12 +16,18 @@ import java.util.regex.Pattern;
 
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.enums.FeatureType.*;
 import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.*;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AuthorshipDetectorImpl implements AuthorshipDetector {
-    private InputStream signaturesDataset;
+    public static final int COUNT_FEATURES = 5;
+
+    public static final String REGEX_ALL_SYMBOLS_WITHOUT_LETTERS_AND_SPACE = "[^a-zA-Z ]";
+    public static final String REGEX_DOUBLE_NUMBERS = "-?\\d+(\\.\\d+)?";
+
+    public static final String EMPTY_STRING = "";
+
     private double[] weights;
+    private Map<String, LinguisticSignature> knownSignatures;
 
     public AuthorshipDetectorImpl(InputStream signaturesDataset, double[] weights) {
         setSignaturesDataset(signaturesDataset);
@@ -31,7 +36,17 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
 
     private void setSignaturesDataset(InputStream signaturesDataset) {
         checkNotNull(signaturesDataset);
-        this.signaturesDataset = signaturesDataset;
+        knownSignatures = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(signaturesDataset, UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                addSignature(line);
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error occurred while reading known signatures", ex);
+        }
+
     }
 
     private void setWeights(double[] weights) {
@@ -73,39 +88,10 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
     }
 
     @Override
-    public double calculateSimilarity(LinguisticSignature firstSignature, LinguisticSignature secondSignature) {
-        checkNotNull(firstSignature);
-        checkNotNull(secondSignature);
+    public double calculateSimilarity(LinguisticSignature first, LinguisticSignature second) {
+        checkNotNull(first);
+        checkNotNull(second);
 
-        return calculateSumSimilarity(firstSignature, secondSignature, weights);
-    }
-
-    @Override
-    public String findAuthor(InputStream mysteryText) {
-        checkNotNull(mysteryText);
-
-        Map<String, LinguisticSignature> knownSignatures = getKnownSignatures();
-        LinguisticSignature signature = calculateSignature(mysteryText);
-
-        double closestVal = Double.MAX_VALUE;
-        String closestAuthorName = EMPTY_STRING;
-
-        for (var curr : knownSignatures.entrySet()) {
-            LinguisticSignature currSignature = curr.getValue();
-            double value = calculateSimilarity(currSignature, signature);
-
-            double valuePowTwo = value * value;
-            if (valuePowTwo <= (closestVal * closestVal)) {
-                closestAuthorName = curr.getKey();
-                closestVal = value;
-            }
-        }
-        return closestAuthorName;
-    }
-
-    private static double calculateSumSimilarity(LinguisticSignature first,
-                                                 LinguisticSignature second,
-                                                 double[] weights) {
         Map<FeatureType, Double> firstMysteryFeatures = first.getFeatures();
         Map<FeatureType, Double> secondMysteryFeatures = second.getFeatures();
 
@@ -124,21 +110,29 @@ public class AuthorshipDetectorImpl implements AuthorshipDetector {
         return result;
     }
 
-    private Map<String, LinguisticSignature> getKnownSignatures() {
-        Map<String, LinguisticSignature> knownSignatures = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(signaturesDataset, UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                addSignature(knownSignatures, line);
-            }
+    @Override
+    public String findAuthor(InputStream mysteryText) {
+        checkNotNull(mysteryText);
 
-            return knownSignatures;
-        } catch (IOException ex) {
-            throw new RuntimeException("Error occurred while reading known signatures", ex);
+        LinguisticSignature signature = calculateSignature(mysteryText);
+
+        double closestVal = Double.MAX_VALUE;
+        String closestAuthorName = EMPTY_STRING;
+
+        for (var curr : knownSignatures.entrySet()) {
+            LinguisticSignature currSignature = curr.getValue();
+            double value = calculateSimilarity(currSignature, signature);
+
+            double valuePowTwo = value * value;
+            if (valuePowTwo <= (closestVal * closestVal)) {
+                closestAuthorName = curr.getKey();
+                closestVal = value;
+            }
         }
+        return closestAuthorName;
     }
 
-    private static void addSignature(Map<String, LinguisticSignature> knownSignatures, String line) {
+    private void addSignature(String line) {
         String key = line.replaceAll(REGEX_ALL_SYMBOLS_WITHOUT_LETTERS_AND_SPACE, EMPTY_STRING).strip();
         Pattern pattern = Pattern.compile(REGEX_DOUBLE_NUMBERS);
         Matcher matcher = pattern.matcher(line);

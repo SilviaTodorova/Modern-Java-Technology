@@ -6,36 +6,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.function.ToLongFunction;
-import java.util.regex.Matcher;
-
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.EMPTY_STRING;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_PUNCTUATION;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_DELIMITERS_SENTENCES;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_DELIMITER_WORDS;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.REGEX_DELIMITERS_PHRASE;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.PREDICATE_REMOVE_EMPTY_WORDS;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.LONG_PREDICATE_APPEAR_ONE_PREDICATE;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.APPEAR_ONE;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.BUFFER_SIZE;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.PATTERN_DELIMITERS_SENTENCES;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.ERROR_EXTRACT_DATA;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalConstants.DELIMITER;
-
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunctions.cleanUp;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.GlobalFunctions.lastIndexOfRegex;
-import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.checkNotNull;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TextAnalyzerImpl implements TextAnalyzer {
-    private Set<String> sentences;
-    private Map<String, Integer> words;
+    public static final String ERROR_EXTRACT_DATA = "Error while extracting data from InputStream";
+
+    public static final String REGEX_DELIMITERS_SENTENCES = "[.!?]";
+    public static final String REGEX_DELIMITERS_PHRASE = "[,:;]";
+    public static final String REGEX_DELIMITER_TOKENS = "\\s+";
+    public static final String REGEX_DELIMITER_WORDS = "[\\w0-9]";
+
+    private List<String> sentences;
+    private List<String> words;
+    private Map<String, Long> wordsCount;
 
     public TextAnalyzerImpl(InputStream mysteryText) {
         extractData(mysteryText);
@@ -43,9 +32,7 @@ public class TextAnalyzerImpl implements TextAnalyzer {
 
     @Override
     public double getAverageWordLength() {
-        return words.keySet()
-                .stream()
-                .map(str -> str.replaceAll(REGEX_PUNCTUATION, EMPTY_STRING))
+        return words.stream()
                 .mapToInt(String::length)
                 .average()
                 .getAsDouble();
@@ -61,74 +48,71 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     @Override
     public double getHapaxLegomenaRatio() {
         long countOfUniqWords = getCountOfUniqWords();
-        long countOfUsedWords = getCountOfUsedWords();
-        return (double) countOfUniqWords / countOfUsedWords;
+        long countOfAllWords = getCountOfAllWords();
+        return (double) countOfUniqWords / countOfAllWords;
     }
 
     @Override
     public double getAverageSentenceLength() {
-        long countOfUsedWords = getCountOfUsedWords();
+        long countOfAllWords = getCountOfAllWords();
         long countSentences = getCountSentences();
-        return (double) countOfUsedWords / countSentences;
+        return (double) countOfAllWords / countSentences;
     }
 
     @Override
     public double getAverageSentenceComplexity() {
-        ToLongFunction<String> countPhrasesInSentence = sentence ->
-                Arrays.stream(sentence.split(REGEX_DELIMITERS_PHRASE))
-                .mapToLong(String::length)
-                        .filter(LONG_PREDICATE_APPEAR_ONE_PREDICATE)
-                        .count();
+        long countPhrases = sentences.stream()
+                .flatMap(str -> Arrays.stream(str.split(REGEX_DELIMITERS_PHRASE)))
+                .count();
 
-        return sentences.stream().mapToLong(countPhrasesInSentence).average().getAsDouble();
+        long countSentences = sentences.size();
+
+        return (double) countPhrases / countSentences;
     }
 
     private void extractData(InputStream mysteryText) {
-        sentences = new HashSet<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        mysteryText,
+                        StandardCharsets.UTF_8))) {
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(mysteryText, UTF_8), BUFFER_SIZE)) {
-            String buff;
-            StringBuilder remainder = new StringBuilder();
+            int ascii;
+            StringBuilder textBuilder = new StringBuilder();
 
-            while ((buff = reader.readLine()) != null) {
-                StringBuilder sentence = remainder.append(DELIMITER).append(cleanUp(buff).trim());
-                Matcher matcher = PATTERN_DELIMITERS_SENTENCES.matcher(sentence);
-
-                if (matcher.find()) {
-                    int lastIndex = lastIndexOfRegex(sentence.toString(), REGEX_DELIMITERS_SENTENCES);
-                    String start = sentence.substring(0, lastIndex);
-                    String[] allSentences = start.trim().split(REGEX_DELIMITERS_SENTENCES);
-
-                    Arrays.stream(allSentences).filter(PREDICATE_REMOVE_EMPTY_WORDS).forEach(sentences::add);
-                    remainder.replace(0, remainder.length(), sentence.substring(lastIndex + 1));
-
-                }
+            while ((ascii = reader.read()) != -1) {
+                char character = (char) ascii;
+                textBuilder.append(character);
             }
 
-            fillWords();
+            String text = textBuilder.toString();
+            setWords(text);
+            setSentences(text);
+
         } catch (IOException ex) {
             throw new RuntimeException(ERROR_EXTRACT_DATA, ex);
         }
     }
 
-    private void fillWords() {
-        words = new HashMap<>();
-        sentences.stream()
-                .flatMap(str -> Arrays.stream(str.split(REGEX_DELIMITER_WORDS)))
-                .filter(PREDICATE_REMOVE_EMPTY_WORDS)
-                .forEach(this::addWord);
-
+    private void setSentences(String text) {
+        String[] sentences = text.split(REGEX_DELIMITERS_SENTENCES);
+        this.sentences = Arrays.stream(sentences)
+                .filter(str -> !str.isEmpty() && !str.isBlank())
+                .collect(Collectors.toList());
     }
 
-    private void addWord(String word) {
-        checkNotNull(word);
+    private void setWords(String text) {
+        Pattern patternDelimitersWords = Pattern.compile(REGEX_DELIMITER_WORDS);
+        String[] tokens = text.split(REGEX_DELIMITER_TOKENS);
 
-        int counter = 0;
-        if (words.containsKey(word)) {
-            counter = words.get(word);
-        }
+        this.words = Arrays.stream(tokens)
+                .map(this::cleanUp)
+                .filter(token -> patternDelimitersWords.matcher(token).find())
+                .collect(Collectors.toList());
 
-        words.put(word, ++counter);
+        this.wordsCount = Arrays.stream(tokens)
+                .map(this::cleanUp)
+                .filter(token -> patternDelimitersWords.matcher(token).find())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
     private long getCountSentences() {
@@ -136,22 +120,24 @@ public class TextAnalyzerImpl implements TextAnalyzer {
     }
 
     private long getCountOfUniqWords() {
-        return words.values()
+        return wordsCount.values()
                 .stream()
-                .filter(value -> value == APPEAR_ONE)
+                .filter(value -> value == 1)
                 .count();
     }
 
     private long getCountOfUsedWords() {
-        return words.values()
-                .stream()
-                .count();
+        return wordsCount.values()
+                .size();
     }
 
     private long getCountOfAllWords() {
-        return words.values()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .sum();
+        return words.size();
+    }
+
+    public String cleanUp(String word) {
+        String regex = "^[!.,:;\\-?<>#*\'\"\\[\\(\\]\\)\\n\\t\\\\]+|[!.,:;\\-?<>#\\*\'\"\\[\\(\\]\\)\\n\\t\\\\]+$";
+        return word.toLowerCase()
+                .replaceAll( regex, "");
     }
 }
