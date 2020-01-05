@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class TextAnalyzerImpl implements TextAnalyzer {
-    public static final String ERROR_EXTRACT_DATA = "Error while extracting data from InputStream";
+    private static final String ERROR_EXTRACT_DATA = "Error while extracting data from InputStream";
 
-    public static final String REGEX_DELIMITERS_SENTENCES = "[.!?]";
-    public static final String REGEX_DELIMITERS_PHRASE = "[,:;]";
-    public static final String REGEX_DELIMITER_TOKENS = "\\s+";
-    public static final String REGEX_DELIMITER_WORDS = "[\\w0-9]";
+    private static final String REGEX_DELIMITERS_SENTENCES = "[.!?]";
+    private static final String REGEX_DELIMITERS_PHRASE = "[,:;]";
+    private static final String REGEX_DELIMITER_TOKENS = "\\s+";
+    private static final String REGEX_DELIMITER_WORDS = "[\\w0-9]";
 
     private List<String> sentences;
     private List<String> words;
@@ -135,7 +135,7 @@ public class TextAnalyzerImpl implements TextAnalyzer {
         return words.size();
     }
 
-    public String cleanUp(String word) {
+    private String cleanUp(String word) {
         String regex = "^[!.,:;\\-?<>#*\'\"\\[\\(\\]\\)\\n\\t\\\\]+|[!.,:;\\-?<>#\\*\'\"\\[\\(\\]\\)\\n\\t\\\\]+$";
         return word.toLowerCase()
                 .replaceAll( regex, "");

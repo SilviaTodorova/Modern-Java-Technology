@@ -19,12 +19,12 @@ import static bg.sofia.uni.fmi.mjt.authroship.detection.models.common.Validator.
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AuthorshipDetectorImpl implements AuthorshipDetector {
-    public static final int COUNT_FEATURES = 5;
+    private static final int COUNT_FEATURES = 5;
 
-    public static final String REGEX_ALL_SYMBOLS_WITHOUT_LETTERS_AND_SPACE = "[^a-zA-Z ]";
-    public static final String REGEX_DOUBLE_NUMBERS = "-?\\d+(\\.\\d+)?";
+    private static final String REGEX_ALL_SYMBOLS_WITHOUT_LETTERS_AND_SPACE = "[^a-zA-Z ]";
+    private static final String REGEX_DOUBLE_NUMBERS = "-?\\d+(\\.\\d+)?";
 
-    public static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = "";
 
     private double[] weights;
     private Map<String, LinguisticSignature> knownSignatures;

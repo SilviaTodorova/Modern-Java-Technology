@@ -96,17 +96,6 @@ public class AuthorshipDetectorTest {
         detector.calculateSignature(null);
     }
 
-    private static LinguisticSignature createSignature(double[] signatures) {
-        Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
-
-        FeatureType[] values = FeatureType.values();
-        for (int index = 0; index < COUNT_FEATURES; index++) {
-            features.put(values[index], signatures[index]);
-        }
-
-        return new LinguisticSignature(features);
-    }
-
     @Test
     public void testFindAuthorOfMystery1() {
         InputStream stream = TextStreamInitializer.initFirstMysteryStream();
@@ -131,12 +120,14 @@ public class AuthorshipDetectorTest {
         assertEquals(message, AUTHOR_OF_MYSTERY_3, author);
     }
 
-    @Test
-    public void testFindAuthorOfMystery1ReadFromFile() throws IOException {
-        InputStream stream = new FileInputStream("D:\\JavaProjects\\ModernJavaTechnology\\hws\\AuthorshipDetection\\resources\\mysteryFiles\\mystery1.txt");
-        InputStream signaturesDataset = new FileInputStream(new File("D:\\JavaProjects\\ModernJavaTechnology\\hws\\AuthorshipDetection\\resources\\signatures\\knownSignatures.txt"));
-        AuthorshipDetector authorshipDetector = new AuthorshipDetectorImpl(signaturesDataset, WEIGHTS);
-        String author = authorshipDetector.findAuthor(stream);
-        assertEquals("Jane Austen", author);
+    private static LinguisticSignature createSignature(double[] signatures) {
+        Map<FeatureType, Double> features = new EnumMap<>(FeatureType.class);
+
+        FeatureType[] values = FeatureType.values();
+        for (int index = 0; index < COUNT_FEATURES; index++) {
+            features.put(values[index], signatures[index]);
+        }
+
+        return new LinguisticSignature(features);
     }
 }

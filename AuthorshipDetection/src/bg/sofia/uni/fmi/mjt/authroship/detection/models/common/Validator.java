@@ -1,9 +1,9 @@
 package bg.sofia.uni.fmi.mjt.authroship.detection.models.common;
 
 public class Validator {
-    public static final String ERROR_NULL_VALUE = "Null value";
-    public static final String ERROR_NEGATIVE_VALUE = "Negative value";
-    public static final String ERROR_COUNT_VALUES_IN_ARRAY = "Array must contains %d elements not %d";
+    private static final String ERROR_NULL_VALUE = "Null value";
+    private static final String ERROR_NEGATIVE_VALUE = "Negative value";
+    private static final String ERROR_COUNT_VALUES_IN_ARRAY = "Array must contains %d elements not %d";
 
     public static <T> void checkNotNull(T elem) {
         if (elem == null) {
