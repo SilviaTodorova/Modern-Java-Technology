@@ -1,31 +1,38 @@
 package bg.sofia.uni.fmi.chat.net;
 
-import java.io.IOException;
-
-import bg.sofia.uni.fmi.chat.net.client.ChatClient;
-import bg.sofia.uni.fmi.chat.net.server.ChatServer;
+import bg.sofia.uni.fmi.chat.nio.client.ChatClient;
+import bg.sofia.uni.fmi.chat.nio.server.ChatServer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ChatClientTest {
-
     @Mock
     private ChatServer chatServer;
 
     private ChatClient chatClient;
+    private static Thread clientStarterThread;
 
     @Before
-    public void setup() throws IOException {
-        chatClient = new ChatClient();
-        chatClient.run();
+    public void setup() {
         chatServer = Mockito.mock(ChatServer.class);
 
+        clientStarterThread = new Thread() {
+            public void run() {
+                chatClient = new ChatClient();
+                chatClient.run();
+            }
+        };
+
+        clientStarterThread.start();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void sendRequest() {
-      chatClient.connect("nick Maria");
+        Mockito.doNothing().when(chatServer).run();
+        chatClient.run();
     }
+
+
 }

@@ -1,20 +1,23 @@
 package bg.sofia.uni.fmi.chat.net;
 
-import java.io.UnsupportedEncodingException;
-
-import bg.sofia.uni.fmi.chat.net.client.ChatClient;
-import bg.sofia.uni.fmi.chat.net.server.ChatServer;
+import bg.sofia.uni.fmi.chat.nio.client.ChatClient;
+import bg.sofia.uni.fmi.chat.nio.server.ChatServer;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ChatServerTest {
+    @Mock
+    private ChatClient chatClient;
 
     private static ChatServer chatServer;
     private static Thread serverStarterThread;
 
     @Before
     public void setup() {
+        chatClient = Mockito.mock(ChatClient.class);
+
         serverStarterThread = new Thread() {
 
             public void run() {
@@ -27,9 +30,9 @@ public class ChatServerTest {
     }
 
     @Test
-    public void testServer() throws UnsupportedEncodingException {
+    public void testServer() {
         ChatClient chatClient = Mockito.mock(ChatClient.class);
-        Mockito.doNothing().when(chatClient).connect("ivan");
+        Mockito.doNothing().when(chatClient).run();
     }
 }
 
