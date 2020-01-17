@@ -17,7 +17,7 @@ import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.SEND_MESSAGE;
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.INVALID_NUMBER_OF_ARGUMENTS_FORMAT;
 
 public class SendAll extends CommandBase {
-    private static final int EXPECTED_NUMBER_OF_PARAMETERS = 1;
+    private static final int EXPECTED_MIN_NUMBER_OF_PARAMETERS = 1;
 
     private String message;
 
@@ -57,10 +57,10 @@ public class SendAll extends CommandBase {
     }
 
     private void parseParameters(String[] parameters) {
-        if (parameters.length != EXPECTED_NUMBER_OF_PARAMETERS) {
+        if (parameters.length < EXPECTED_MIN_NUMBER_OF_PARAMETERS) {
             String formattedMessage = String.format(
                     INVALID_NUMBER_OF_ARGUMENTS_FORMAT,
-                    EXPECTED_NUMBER_OF_PARAMETERS,
+                    EXPECTED_MIN_NUMBER_OF_PARAMETERS,
                     parameters.length);
 
             throw new IllegalArgumentException(formattedMessage);

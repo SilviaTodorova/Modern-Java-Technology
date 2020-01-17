@@ -17,7 +17,7 @@ import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.INVALID_NUMBER_OF
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.TO_USERNAME_INDEX;
 
 public class Send extends CommandBase {
-    private static final int EXPECTED_NUMBER_OF_PARAMETERS = 2;
+    private static final int EXPECTED_MIN_NUMBER_OF_PARAMETERS = 2;
 
     private String to;
     private String message;
@@ -51,16 +51,19 @@ public class Send extends CommandBase {
                 username,
                 message);
 
-        toSocket.write(ByteBuffer.wrap(clientsMessage.getBytes()));
+        SocketChannel senderSocket = getSocket();
+        if (!senderSocket.equals(toSocket)) {
+            toSocket.write(ByteBuffer.wrap(clientsMessage.getBytes()));
+        }
 
         return clientsMessage;
     }
 
     private void parseParameters(String[] parameters) {
-        if (parameters.length != EXPECTED_NUMBER_OF_PARAMETERS) {
+        if (parameters.length < EXPECTED_MIN_NUMBER_OF_PARAMETERS) {
             String formattedMessage = String.format(
                     INVALID_NUMBER_OF_ARGUMENTS_FORMAT,
-                    EXPECTED_NUMBER_OF_PARAMETERS,
+                    EXPECTED_MIN_NUMBER_OF_PARAMETERS,
                     parameters.length);
 
             throw new IllegalArgumentException(formattedMessage);

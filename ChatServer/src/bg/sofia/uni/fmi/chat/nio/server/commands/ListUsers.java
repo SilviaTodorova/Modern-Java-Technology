@@ -11,7 +11,6 @@ import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.USERS_OFFLINE_MES
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.DELIMITER_USERS;
 
 public class ListUsers extends CommandBase {
-
     public ListUsers(String username, SocketChannel socket) {
         super(username, socket);
     }

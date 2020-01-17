@@ -10,9 +10,15 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.Arrays;
 
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.*;
+
 
 public class ChatServer {
 
@@ -20,6 +26,42 @@ public class ChatServer {
 
     public ChatServer() {
         users = new HashMap<>();
+    }
+
+    public static void main(String[] args) {
+        new ChatServer().run();
+    }
+
+    public static void removeUser(SocketChannel socket) {
+        users.remove(socket);
+    }
+
+    public static String getUsername(SocketChannel socket) {
+        if (!isUserConnected(socket)) {
+            throw new IllegalArgumentException();
+        }
+
+        return users.get(socket);
+    }
+
+    public static SocketChannel getUserSocket(String username) {
+        return users.entrySet().stream()
+                .filter(e -> e.getValue().equals(username))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static boolean isUserConnected(SocketChannel socket) {
+        return users.containsKey(socket);
+    }
+
+    public static Collection<String> getConnectedUsers() {
+        return users.values();
+    }
+
+    public static Map<SocketChannel, String> getConnectedUsersSockets() {
+        return users;
     }
 
     public void run() {
@@ -43,47 +85,67 @@ public class ChatServer {
                     } catch (InterruptedException e) {
                         System.out.printf(ERROR_READ_CHANNEL_MESSAGE_FORMAT);
                     }
+
                     continue;
                 }
 
-                Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
-
-                while (keyIterator.hasNext()) {
-                    SelectionKey key = keyIterator.next();
-                    if (key.isReadable()) {
-                        SocketChannel sc = (SocketChannel) key.channel();
-
-                        buffer.clear();
-                        int r = sc.read(buffer);
-                        if (r <= 0) {
-                            sc.close();
-                            break;
-                        }
-
-                        buffer.flip();
-
-                        String command = new String(buffer.array()).trim().split(System.lineSeparator())[0];
-                        String response = executeCommand(command, sc);
-                        sc.write(ByteBuffer.wrap(response.getBytes()));
-
-                        if (command.equals(DISCONNECT_COMMAND)) {
-                            sc.close();
-                        }
-                    } else if (key.isAcceptable()) {
-                        ServerSocketChannel sockChannel = (ServerSocketChannel) key.channel();
-                        SocketChannel accept = sockChannel.accept();
-                        accept.configureBlocking(false);
-                        accept.register(selector, SelectionKey.OP_READ);
-                    }
-
-                    keyIterator.remove();
-                }
-
+                iterateClients(selector, buffer);
             }
 
         } catch (Exception ex) {
-            System.out.printf(ERROR_READ_CHANNEL_MESSAGE_FORMAT);
+            System.out.printf(ERROR_SERVER_MESSAGE_FORMAT);
+        }
+    }
+
+    private static void iterateClients(Selector selector, ByteBuffer buffer) throws IOException {
+        Set<SelectionKey> selectedKeys = selector.selectedKeys();
+        Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
+
+        while (keyIterator.hasNext()) {
+            SelectionKey key = keyIterator.next();
+            if (key.isReadable()) {
+                SocketChannel sc = (SocketChannel) key.channel();
+
+                // Read
+                buffer.clear();
+                int r = sc.read(buffer);
+                if (r <= 0) {
+                    sc.close();
+                    break;
+                }
+
+                buffer.flip();
+                String command = new String(buffer.array(), 0, buffer.limit());
+
+                // Write
+                buffer.clear();
+                try {
+
+                    String response = executeCommand(command, sc);
+                    buffer.put(response.getBytes());
+
+                } catch (Exception ex) {
+                    String message = ex.getMessage() != null && !ex.getMessage().isEmpty() ?
+                            ex.getMessage() : ex.toString();
+
+                    buffer.put(message.getBytes());
+                }
+
+                buffer.flip();
+                sc.write(buffer);
+
+                if (command.equals(DISCONNECT_COMMAND)) {
+                    sc.close();
+                }
+
+            } else if (key.isAcceptable()) {
+                ServerSocketChannel sockChannel = (ServerSocketChannel) key.channel();
+                SocketChannel accept = sockChannel.accept();
+                accept.configureBlocking(false);
+                accept.register(selector, SelectionKey.OP_READ);
+            }
+
+            keyIterator.remove();
         }
     }
 
@@ -125,49 +187,9 @@ public class ChatServer {
 
             CommandFactory factory = new CommandFactory();
             Command cmd = factory.createCommand(command, socket, username, parameters);
-
-            if (cmd == null) {
-                return String.format(ERROR_INVALID_COMMAND_FORMAT_MESSAGE);
-            } else {
-                return cmd.execute();
-            }
+            return cmd.execute();
         }
     }
 
-    public static boolean isUserConnected(SocketChannel socket) {
-        return users.containsKey(socket);
-    }
-
-    public static void removeUser(SocketChannel socket) {
-        users.remove(socket);
-    }
-
-    public static String getUsername(SocketChannel socket) {
-        if (!isUserConnected(socket)) {
-            throw new IllegalArgumentException();
-        }
-
-        return users.get(socket);
-    }
-
-    public static SocketChannel getUserSocket(String username) {
-        return users.entrySet().stream()
-                .filter(e -> e.getValue().equals(username))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public static Collection<String> getConnectedUsers() {
-        return users.values();
-    }
-
-    public static Map<SocketChannel, String> getConnectedUsersSockets() {
-        return users;
-    }
-
-    public static void main(String[] args) {
-        new ChatServer().run();
-    }
 }
 

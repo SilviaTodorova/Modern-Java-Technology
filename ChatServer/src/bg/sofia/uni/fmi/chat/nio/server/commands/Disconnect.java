@@ -4,7 +4,13 @@ import bg.sofia.uni.fmi.chat.nio.server.ChatServer;
 
 import java.nio.channels.SocketChannel;
 
-import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.*;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.ERROR_MESSAGE_DISCONNECT;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.USER_DISCONNECTED_MESSAGE_FORMAT;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.DISCONNECT_MESSAGE_FORMAT;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.HOST;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.PORT;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.ERROR_MESSAGE_DISCONNECT_FORMAT;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.ERROR_MESSAGE_CLIENT_DISCONNECT;
 
 public class Disconnect extends CommandBase {
 

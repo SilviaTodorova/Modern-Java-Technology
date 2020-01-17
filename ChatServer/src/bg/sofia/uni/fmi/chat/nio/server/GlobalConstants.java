@@ -53,5 +53,6 @@ public class GlobalConstants {
     public static final String USER_DISCONNECTED_MESSAGE_FORMAT = "%s disconnected%n";
 
     public static final String ERROR_READ_CHANNEL_MESSAGE_FORMAT = "error while reading from channel%n";
+    public static final String ERROR_SERVER_MESSAGE_FORMAT = "error server%n";
     public static final String ERROR_MESSAGE_DISCONNECT_FORMAT = "%s cannot disconnect%n";
 }
