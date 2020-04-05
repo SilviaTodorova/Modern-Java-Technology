@@ -15,6 +15,7 @@ import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.MESSAGE_FORMAT;
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.DATE_FORMATTER;
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.INVALID_NUMBER_OF_ARGUMENTS_FORMAT;
 import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.TO_USERNAME_INDEX;
+import static bg.sofia.uni.fmi.chat.nio.server.GlobalConstants.DELIMITER;
 
 public class Send extends CommandBase {
     private static final int EXPECTED_MIN_NUMBER_OF_PARAMETERS = 2;
@@ -70,6 +71,6 @@ public class Send extends CommandBase {
         }
 
         to = parameters[TO_USERNAME_INDEX - 1];
-        message = Arrays.stream(parameters).skip(1).collect(Collectors.joining(", "));
+        message = Arrays.stream(parameters).skip(1).collect(Collectors.joining(DELIMITER));
     }
 }

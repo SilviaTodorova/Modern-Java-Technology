@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.chat.net;
+package bg.sofia.uni.fmi.chat.nio;
 
 import org.junit.Test;
 
